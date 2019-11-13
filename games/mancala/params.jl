@@ -2,7 +2,7 @@ Network = ResNet{Game}
 
 netparams = ResNetHP(
   num_filters=128,
-  num_blocks=5,
+  num_blocks=10,
   conv_kernel_size=(3,1),
   num_policy_head_filters=4,
   num_value_head_filters=32,
@@ -15,7 +15,7 @@ netparams = SimpleNetHP(
 =#
 self_play = SelfPlayParams(
   num_games=2_000,
-  reset_mcts_every=400,
+  reset_mcts_every=1_000,
   mcts=MctsParams(
     use_gpu=true,
     num_workers=64,
@@ -35,7 +35,7 @@ arena = ArenaParams(
 learning = LearningParams(
   batch_size=256,
   loss_computation_batch_size=1024,
-  gc_every=2_000,
+  gc_every=0,
   learning_rate=1e-3,
   l2_regularization=1e-4,
   nonvalidity_penalty=1.,
@@ -48,7 +48,7 @@ params = Params(
   num_iters=40,
   num_game_stages=5,
   mem_buffer_size=PLSchedule(
-    [      0,       20],
+    [      0,        40],
     [200_000, 2_000_000]))
 
 validation = RolloutsValidation(

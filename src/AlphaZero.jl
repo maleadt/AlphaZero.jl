@@ -58,10 +58,10 @@ include("Session.jl")
 include("Profile.jl")
 
 # We support Flux and Knet
-#include("Flux/FluxNets.jl")
-#using .FluxNets
-include("Knet/KNets.jl")
-using .KNets
+include("Flux/FluxNets.jl")
+using .FluxNets
+#include("Knet/KNets.jl")
+#using .KNets
 
 end
 
