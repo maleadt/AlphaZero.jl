@@ -10,19 +10,11 @@ using ..Network
 using Base: @kwdef
 import ..GameInterface, ..Util, ..CyclicSchedule
 
-using CUDAapi
+using CUDA
 
 # Import CuArrays only if CUDA is installed
-if has_cuda()
-  try
-    using CuArrays
-    @eval const CUARRAYS_IMPORTED = true
-  catch ex
-    @warn(
-      "CUDA is installed, but CuArrays.jl fails to load.",
-      exception=(ex,catch_backtrace()))
-    @eval const CUARRAYS_IMPORTED = false
-  end
+if CUDA.functional()
+  @eval const CUARRAYS_IMPORTED = true
 else
   @eval const CUARRAYS_IMPORTED = false
 end
@@ -31,7 +23,7 @@ import Flux
 
 if CUARRAYS_IMPORTED
   @eval begin
-    CuArrays.allowscalar(false)
+    CUDA.allowscalar(false)
     on_gpu(::Type{<:Array}) = false
     on_gpu(::Type{<:CuArray}) = true
     on_gpu(x) = on_gpu(typeof(x))
@@ -138,7 +130,7 @@ regularized_params_(l::Flux.Conv) = [l.weight]
 
 # Reimplementation of what used to be Flux.prefor, does not visit leafs
 function foreach_flux_node(f::Function, x, seen = IdDict())
-  Flux.isleaf(x) && return
+  Flux.Data.isleaf(x) && return
   haskey(seen, x) && return
   seen[x] = true
   f(x)
